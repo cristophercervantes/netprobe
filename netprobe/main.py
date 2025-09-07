@@ -1,10 +1,25 @@
 import argparse
 import sys
 import json
-from netprobe.core import is_live, scan_ports, batch_check, parse_target
+import asyncio
+from tqdm import tqdm
+from netprobe.core import is_ip_live, scan_ports, batch_check, parse_target, is_domain_live
+
+def print_banner():
+    """Print ASCII art banner with tool name and author."""
+    banner = """
+    ╔════════════════════════════════════════════╗
+    ║          NetProbe - Network Scanner        ║
+    ║          Author: Cristopher                ║
+    ║          Version: 0.2.0                    ║
+    ╚════════════════════════════════════════════╝
+    """
+    print(banner)
 
 def main():
-    parser = argparse.ArgumentParser(description="NetProbe: Network probing tool.")
+    print_banner()
+    
+    parser = argparse.ArgumentParser(description="NetProbe: High-performance network probing tool.")
     subparsers = parser.add_subparsers(dest='command', required=True)
 
     # IP command
@@ -27,7 +42,8 @@ def main():
     batch_parser = subparsers.add_parser('batch', help='Check multiple from file')
     batch_parser.add_argument('--file', required=True, help='File with targets (one per line)')
     batch_parser.add_argument('--port', type=int, default=80, help='Port to check')
-    batch_parser.add_argument('--threads', type=int, default=10, help='Number of threads')
+    batch_parser.add_argument('--threads', type=int, default=50, help='Number of threads')
+    batch_parser.add_argument('--batch-size', type=int, default=1000, help='Batch size for processing')
 
     # Common options
     for p in [ip_parser, scan_ip_parser, domain_parser, batch_parser]:
@@ -37,26 +53,38 @@ def main():
 
     args = parser.parse_args()
 
+    loop = asyncio.get_event_loop()
+
     if args.command == 'ip':
-        target = args.target
-        live = is_live(target, args.port, args.timeout)
-        result = {'target': target, 'port': args.port, 'live': live}
+        live = is_ip_live(args.target, args.port, args.timeout)
+        result = {'target': args.target, 'port': args.port, 'live': live}
 
     elif args.command == 'scan-ip':
-        target = args.target
-        open_ports = scan_ports(target, args.start_port, args.end_port, args.timeout)
-        result = {'target': target, 'open_ports': open_ports}
+        print(f"Scanning {args.target} from port {args.start_port} to {args.end_port}...")
+        open_ports = loop.run_until_complete(
+            scan_ports(args.target, args.start_port, args.end_port, args.timeout, args.threads)
+        )
+        result = {'target': args.target, 'open_ports': open_ports}
 
     elif args.command == 'domain':
-        target = parse_target(args.target)
-        live = is_live(target, args.port, args.timeout)
-        result = {'target': target, 'port': args.port, 'live': live}
+        async def check_domain():
+            async with aiohttp.ClientSession() as session:
+                return await is_domain_live(session, args.target, args.port, args.timeout)
+        result = loop.run_until_complete(check_domain())
 
     elif args.command == 'batch':
-        with open(args.file, 'r') as f:
-            targets = [line.strip() for line in f if line.strip()]
-        results = batch_check(targets, args.port, args.timeout, args.threads)
-        result = results
+        try:
+            with open(args.file, 'r') as f:
+                targets = [line.strip() for line in f if line.strip()]
+        except FileNotFoundError:
+            print(f"Error: File {args.file} not found")
+            sys.exit(1)
+        
+        print(f"Scanning {len(targets)} targets on port {args.port}...")
+        results = loop.run_until_complete(
+            batch_check(targets, args.port, args.timeout, args.threads, args.batch_size)
+        )
+        result = {r['target']: r for r in results}
 
     if args.json:
         output = json.dumps(result, indent=4)
@@ -69,4 +97,5 @@ def main():
             f.write(output)
 
 if __name__ == "__main__":
+    import aiohttp
     main()
