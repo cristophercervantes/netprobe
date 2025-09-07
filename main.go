@@ -299,6 +299,25 @@ func parsePorts(portStr string) ([]int, error) {
 	return []int{port}, nil
 }
 
+func readTargetsFromFile(filename string) ([]string, error) {
+	content, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	
+	lines := strings.Split(string(content), "\n")
+	var targets []string
+	
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" && !strings.HasPrefix(line, "#") {
+			targets = append(targets, line)
+		}
+	}
+	
+	return targets, nil
+}
+
 func printBanner() {
 	fmt.Println(`
   __  __           _                  
@@ -309,13 +328,14 @@ func printBanner() {
           
     Advanced Network Scanning Tool
           Author: Christopher
-          Version: 1.0
+          Version: 1.1
 	`)
 }
 
 func main() {
 	var (
 		host      = flag.String("h", "", "Host to scan (IP or domain)")
+		file      = flag.String("f", "", "File containing list of hosts to scan (one per line)")
 		portRange = flag.String("p", "80,443", "Ports to scan (e.g., 80,443 or 1-100)")
 		timeout   = flag.Duration("t", 5*time.Second, "Timeout for connections")
 		concurrent= flag.Int("c", 100, "Number of concurrent scans")
@@ -326,16 +346,23 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Println("xprobe v1.0 - Advanced Network Scanning Tool")
+		fmt.Println("xprobe v1.1 - Advanced Network Scanning Tool")
 		fmt.Println("Author: Christopher")
 		return
 	}
 
-	if *host == "" {
+	// Validate input
+	if *host == "" && *file == "" {
 		printBanner()
-		fmt.Println("Error: host is required")
-		fmt.Println("Usage: xprobe -h <host> [options]")
+		fmt.Println("Error: either host or file is required")
+		fmt.Println("Usage: xprobe -h <host> OR -f <file> [options]")
 		flag.PrintDefaults()
+		os.Exit(1)
+	}
+
+	if *host != "" && *file != "" {
+		printBanner()
+		fmt.Println("Error: cannot use both -h and -f options simultaneously")
 		os.Exit(1)
 	}
 
@@ -351,50 +378,73 @@ func main() {
 
 	scanner := NewScanner(*timeout, *concurrent, *verbose)
 
-	if *verbose {
-		fmt.Printf("[+] Starting scan against %s\n", *host)
-	}
-
-	if alive := scanner.CheckHost(*host); !alive {
-		if !*verbose {
-			fmt.Printf("[-] Host %s appears to be down\n", *host)
+	// Get targets
+	var targets []string
+	if *file != "" {
+		targets, err = readTargetsFromFile(*file)
+		if err != nil {
+			fmt.Printf("Error reading targets from file: %v\n", err)
+			os.Exit(1)
 		}
-		os.Exit(1)
-	}
-
-	if *checkOnly {
-		if !*verbose {
-			fmt.Printf("[+] Host %s is alive\n", *host)
+		if len(targets) == 0 {
+			fmt.Println("Error: no valid targets found in file")
+			os.Exit(1)
 		}
-		os.Exit(0)
+		if *verbose {
+			fmt.Printf("[+] Loaded %d targets from file: %s\n", len(targets), *file)
+		}
+	} else {
+		targets = []string{*host}
 	}
 
-	results := scanner.ScanPorts(*host, ports)
+	// Process each target
+	for _, target := range targets {
+		if *verbose {
+			fmt.Printf("[+] Starting scan against %s\n", target)
+		}
 
-	// Print results
-	fmt.Printf("\nScan results for %s:\n", *host)
-	fmt.Println("PORT     STATUS    SERVICE       HTTP STATUS  RESPONSE TIME")
-	fmt.Println("-----------------------------------------------------------")
-	
-	openCount := 0
-	for _, result := range results {
-		status := "CLOSED"
-		if result.Open {
-			status = "OPEN"
-			openCount++
+		if alive := scanner.CheckHost(target); !alive {
+			if !*verbose {
+				fmt.Printf("[-] Host %s appears to be down\n", target)
+			}
+			continue
+		}
+
+		if *checkOnly {
+			if !*verbose {
+				fmt.Printf("[+] Host %s is alive\n", target)
+			}
+			continue
+		}
+
+		results := scanner.ScanPorts(target, ports)
+
+		// Print results
+		fmt.Printf("\nScan results for %s:\n", target)
+		fmt.Println("PORT     STATUS    SERVICE       HTTP STATUS  RESPONSE TIME")
+		fmt.Println("-----------------------------------------------------------")
+		
+		openCount := 0
+		for _, result := range results {
+			status := "CLOSED"
+			if result.Open {
+				status = "OPEN"
+				openCount++
+			}
+			
+			httpStatus := ""
+			if result.Status > 0 {
+				httpStatus = fmt.Sprintf("%d", result.Status)
+			}
+			
+			responseTime := fmt.Sprintf("%.2fms", float64(result.ResponseTime.Microseconds())/1000)
+			
+			fmt.Printf("%-8d %-10s %-12s %-12s %s\n", 
+				result.Port, status, result.Service, httpStatus, responseTime)
 		}
 		
-		httpStatus := ""
-		if result.Status > 0 {
-			httpStatus = fmt.Sprintf("%d", result.Status)
-		}
-		
-		responseTime := fmt.Sprintf("%.2fms", float64(result.ResponseTime.Microseconds())/1000)
-		
-		fmt.Printf("%-8d %-10s %-12s %-12s %s\n", 
-			result.Port, status, result.Service, httpStatus, responseTime)
+		fmt.Printf("\nSummary for %s: %d ports scanned, %d open, %d closed\n", 
+			target, len(results), openCount, len(results)-openCount)
+		fmt.Println("===========================================================")
 	}
-	
-	fmt.Printf("\nSummary: %d ports scanned, %d open, %d closed\n", 
-		len(results), openCount, len(results)-openCount)
 }
