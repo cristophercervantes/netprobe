@@ -4,13 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "netprobe"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
-  { name = "Your Name", email = "your.email@example.com" },
+  { name = "Cristopher", email = "your.email@example.com" },
 ]
-description = "A simple network probing tool for checking live IPs and domains on ports."
+description = "A high-performance network probing tool for checking live IPs and domains on ports."
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
+dependencies = [
+  "aiohttp>=3.8.0",
+  "tqdm>=4.66.0",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
