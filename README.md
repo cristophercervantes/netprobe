@@ -27,50 +27,39 @@ Run `netprobe --help` for options.
 
 ```bash
 netprobe ip 192.168.1.1
+```
+
 Check IP on specific port:
-
-Bash
-
+```
 netprobe ip 192.168.1.1 --port 443
+```
+
 Scan ports on IP:
-
-Bash
-
+```
 netprobe scan-ip 192.168.1.1 --start-port 1 --end-port 1024
+```
+
 Check domain live:
-
-Bash
-
+```
 netprobe domain example.com --port 80
+```
+
 Scan multiple from file (supports 80k+ targets):
-
-Bash
-
+```
 netprobe batch --file targets.txt --port 80
-Where targets.txt contains IPs or domains, one per line.
+```
+
+Where ```targets.txt``` contains IPs or domains, one per line.
 
 ⚙️ Options
---port PORT: Specify the port to check (default: 80).
+```--port PORT```: Specify the port to check (default: 80).
 
---timeout TIMEOUT: Connection timeout in seconds (default: 2).
+```--timeout TIMEOUT```: Connection timeout in seconds (default: 2).
 
---threads THREADS: Number of threads for IP/port scans (default: 50).
+```--threads THREADS```: Number of threads for IP/port scans (default: 50).
 
---batch-size SIZE: Number of targets per batch (default: 1000).
+```--batch-size SIZE```: Number of targets per batch (default: 1000).
 
---output FILE: Save results to a file.
+```--output FILE```: Save results to a file.
 
---json: Output in JSON format.
-
-📋 Requirements
-Python 3.8+
-
-Dependencies: aiohttp, tqdm
-
-See requirements.txt for details.
-
-📜 License
-MIT License. See LICENSE file.
-
-⚠️ Disclaimer
-Use responsibly. Scanning without permission may be illegal. The author is not responsible for misuse.
+```--json```: Output in JSON format.
