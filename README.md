@@ -63,3 +63,13 @@ Where ```targets.txt``` contains IPs or domains, one per line.
 ```--output FILE```: Save results to a file.
 
 ```--json```: Output in JSON format.
+
+## 📋 Requirements
+Python 3.8+
+
+Dependencies: ```aiohttp```, ```tqdm```
+
+See ```requirements.txt``` for details.
+
+## 📜 License
+MIT License. See ```LICENSE``` file.
