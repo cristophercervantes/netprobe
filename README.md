@@ -1,23 +1,58 @@
 # xprobe - Advanced Network Scanning Tool
 
-## Overview
-xprobe is a powerful network scanning tool written in Go that allows you to:
-- Check if hosts are alive using multiple methods
-- Scan ports with customizable ranges
-- Detect HTTP services and status codes
-- Measure response times
+![xprobe](https://img.shields.io/badge/xprobe-Network%2520Scanner-blue)
+![Go](https://img.shields.io/badge/Go-1.21%252B-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey)
 
-## Author
-Christopher
+**xprobe** is a powerful, high-performance network scanning tool written in Go.  
+It provides comprehensive network reconnaissance capabilities with a focus on **speed, accuracy, and ease of use.**
 
-## Installation
+---
+
+## 🔥 New in Version 1.1
+- **Multiple Target Support**: Scan multiple IPs/domains from a text file  
+- **Improved Output Formatting**: Better organized results for multiple targets  
+- **File Input Handling**: Support for comments in target files (lines starting with `#`)  
+
+---
+
+## ✨ Features
+- 🚀 **Fast Concurrent Scanning**: Utilizes Go's goroutines for high-speed parallel scanning  
+- 🌐 **Multiple Protocol Support**: TCP port scanning, HTTP/HTTPS service detection  
+- 📊 **Comprehensive Results**: Port status, service detection, HTTP status codes, response times  
+- 🔍 **Host Discovery**: Multiple methods to determine host availability (ICMP, TCP)  
+- ⚡ **Performance Metrics**: Measures and displays connection response times  
+- 🎯 **Flexible Targeting**: Support for IP addresses, domain names, and custom port ranges  
+- 📝 **Detailed Reporting**: Clean, formatted output with scan summaries  
+- 🔧 **Configurable**: Adjustable timeouts, concurrency levels, and verbosity  
+- 📁 **Batch Scanning**: Scan multiple targets from a file  
+
+---
+
+## ⚙️ Installation
 
 ### Prerequisites
-- Go 1.21 or later
-- Ubuntu Linux
+- Go 1.21 or later  
+- Linux (Ubuntu/Debian recommended)  
 
-### Building from Source
+### Quick Install
 ```bash
-git clone <repository-url>
+# Clone the repository
+git clone https://github.com/Christopher/xprobe.git
 cd xprobe
-make build
+
+# Build and install
+make install
+
+#Manual Installation
+```
+## Build the binary
+go build -o xprobe .
+
+## Make it executable
+chmod +x xprobe
+
+## Install to system path (optional)
+sudo mv xprobe /usr/local/bin/
+```
