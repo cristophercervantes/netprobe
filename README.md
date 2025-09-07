@@ -227,6 +227,95 @@ sudo xprobe -h example.com -check
 ```
 xprobe -h target.com -c 50 -t 10s
 ```
+File not found:
+• Ensure file path is correct
+
+• Check permissions: ``` chmod +r targets.txt```
+
+### 🐞 Debugging
+Use verbose mode for detailed information:
+```
+xprobe -h example.com -v -p 80,443
+```
+
+## 📂 Development
+### Building from Source
+```
+git clone https://github.com/Christopher/xprobe.git
+cd xprobe
+go build -o xprobe .
+```
+
+## Project Structure
+```
+xprobe/
+├── main.go      # Main application code
+├── go.mod       # Go module definition
+├── Makefile     # Build automation
+└── README.md    # This file
+```
+
+## 🤝 Contributing
+
+### Contributions are welcome!
+
+1. Fork the repository
+
+2. Create a feature branch:
+```
+ git checkout -b feature-name
+```
+
+3. Commit your changes:
+```
+git commit -am 'Add feature'
+```
+
+4. Push the branch:
+```
+git push origin feature-name
+```
+
+5. Submit a pull request
+
+## 📜 License
+
+xprobe is released under the MIT License.
+See the LICENSE file for details.
+
+## 👨‍💻 Author
+
+Developed by Christopher - Cyber Security Professional
+
+## ⚠️ Disclaimer
+
+xprobe is designed for ethical security testing and network administration.
+Always ensure you have proper authorization before scanning any network or system.
+The authors are not responsible for any misuse of this tool.
+
+## 📌 Roadmap
+
+### Future planned enhancements for xprobe:
+
+• UDP port scanning support
+
+• SSL/TLS certificate information
+
+• XML/JSON output formats
+
+• Nmap-style service version detection
+
+• Integration with vulnerability databases
+
+• Graphical User Interface (GUI)
+
+• API for integration with other tools
+
+Output to file option
+
+CIDR notation support
+
+# 🎉 Happy Scanning! 🚀
 
 
 
