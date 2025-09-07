@@ -44,6 +44,7 @@ cd xprobe
 
 # Build and install
 make install
+```
 
 #Manual Installation
 ```
