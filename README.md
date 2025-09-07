@@ -136,6 +136,100 @@ github.com
 10.0.0.6
 ```
 
+## 🎯 Port Specification
+
+• xprobe supports multiple formats for specifying ports:
+
+• Single port: ```80```
+
+• Comma-separated: ```80,443,8080```
+
+• Range: ```1-1000```
+
+• Combination: ```80,443,8000-9000```
+
+## 📊 Output Explanation
+xprobe provides clear, formatted output:
+```
+PORT     STATUS    SERVICE       HTTP STATUS  RESPONSE TIME
+-----------------------------------------------------------
+80       OPEN      HTTP          200          15.42ms
+443      OPEN      HTTPS         301          23.17ms
+22       OPEN      SSH                       -
+8080     CLOSED    HTTP
+```
+
+• PORT: The scanned port number
+
+• STATUS: Whether the port is OPEN or CLOSED
+
+• SERVICE: Common service associated with the port
+
+• HTTP STATUS: HTTP status code (if applicable)
+
+• RESPONSE TIME: Connection response time in milliseconds
+
+## 🔬 Advanced Usage
+### Scanning Multiple Hosts
+```
+# Create a targets file
+echo -e "example.com\ngithub.com\n192.168.1.1" > targets.txt
+
+# Scan all targets
+xprobe -f targets.txt -p 80,443,22
+```
+
+### Integrating with Other Tools
+```
+# Scan and filter for only open ports
+xprobe -h example.com -p 1-1000 | grep OPEN
+
+# Save results to a file
+xprobe -h example.com -p 1-1000 > scan_results.txt
+
+# Use in combination with other tools
+xprobe -h example.com -p 80,443 | awk '{print $1,$2}' | grep OPEN
+
+# Generate target list from subnet
+nmap -sL 192.168.1.0/24 | grep "Nmap scan" | awk '{print $5}' > targets.txt
+xprobe -f targets.txt -p 80,443 -check
+```
+
+## ⚡ Performance Tips
+
+• Adjust Concurrency: Use -c flag to increase concurrent scans for faster results
+
+• Timeout Settings: Reduce timeout with -t for internal networks, increase for unreliable connections
+
+• Target Specific Ports: Instead of full ranges, target likely ports for faster results
+
+• Verbose Mode: Use -v for debugging, disable for production scans
+
+• Batch Scanning: For large target lists, split into multiple files for parallel execution
+
+## 🛠️ Troubleshooting
+### Common Issues
+Permission denied errors:
+```
+# ICMP scanning may need sudo
+sudo xprobe -h example.com -check
+```
+
+### Host appears down:
+
+• Check network connectivity
+
+• Verify the host is reachable
+
+• Try verbose mode: ```xprobe -h example.com -v```
+
+### Slow scanning:
+```
+xprobe -h target.com -c 50 -t 10s
+```
+
+
+
 
 
 
