@@ -10,64 +10,56 @@ It provides comprehensive network reconnaissance capabilities with a focus on **
 
 ---
 
-## 🔥 New in Version 1.1
-- **Multiple Target Support**: Scan multiple IPs/domains from a text file  
-- **Improved Output Formatting**: Better organized results for multiple targets  
-- **File Input Handling**: Support for comments in target files (lines starting with `#`)  
+## What's New in Version 1.2
+
+* **Go Install Support**: Now installable directly via `go install github.com/cristophercervantes/xprobe@latest`.
+* **Official Release**: This marks the first stable release with version tagging.
+* **Updated Repository**: The official home for the project is now at `github.com/cristophercervantes/xprobe`.
+* **Enhanced Module Support**: Proper Go module configuration has been implemented for easy installation.
+* **Multiple Target Support**: You can now scan multiple IPs/domains by providing a text file.
+* **Improved Output Formatting**: Results are better organized and clearer when scanning multiple targets.
+* **File Input Handling**: The tool now supports comments in target files; lines starting with `#` will be ignored.
+
 
 ---
 
-## ✨ Features
-- 🚀 **Fast Concurrent Scanning**: Utilizes Go's goroutines for high-speed parallel scanning  
-- 🌐 **Multiple Protocol Support**: TCP port scanning, HTTP/HTTPS service detection  
-- 📊 **Comprehensive Results**: Port status, service detection, HTTP status codes, response times  
-- 🔍 **Host Discovery**: Multiple methods to determine host availability (ICMP, TCP)  
-- ⚡ **Performance Metrics**: Measures and displays connection response times  
-- 🎯 **Flexible Targeting**: Support for IP addresses, domain names, and custom port ranges  
-- 📝 **Detailed Reporting**: Clean, formatted output with scan summaries  
-- 🔧 **Configurable**: Adjustable timeouts, concurrency levels, and verbosity  
-- 📁 **Batch Scanning**: Scan multiple targets from a file  
+## Features
+
+* 🚀 **Fast Concurrent Scanning**: Utilizes Go's goroutines for high-speed parallel scanning.
+* 🌐 **Multiple Protocol Support**: Conducts TCP port scanning and HTTP/HTTPS service detection.
+* 📊 **Comprehensive Results**: Reports on port status, detected services, HTTP status codes, and response times.
+* 🔍 **Host Discovery**: Employs multiple methods (ICMP, TCP) to determine if a host is available.
+* ⚡ **Performance Metrics**: Measures and displays connection response times.
+* 🎯 **Flexible Targeting**: Accepts IP addresses, domain names, and custom port ranges.
+* 📝 **Detailed Reporting**: Provides clean, formatted output with helpful scan summaries.
+* 🔧 **Configurable**: Allows for adjustable timeouts, concurrency levels, and verbosity.
+* 📁 **Batch Scanning**: Capable of scanning multiple targets listed in a file.
 
 ---
 
-## ⚙️ Installation
+## ✅ Prerequisites
 
-### Prerequisites
-- Go 1.21 or later  
-- Linux (Ubuntu/Debian recommended)  
+Before you begin, ensure you have the following installed on your system:
 
-### Quick Install
+* **Go**: Version 1.21 or later is required if you plan to build from source.
+* **Operating System**: Linux (Ubuntu/Debian is recommended).
+
+---
+
+## 🛠️ Installation
+
+You can install `xprobe` using any of the methods below.
+
+### Option 1: Go Install (Recommended)
+
+If you have Go installed and configured, you can install `xprobe` with a single command:
+
 ```bash
-# Clone the repository
-git clone https://github.com/Christopher/xprobe.git
-cd xprobe
-
-# Build and install
-make install
+# Install the latest version
+go install [github.com/cristophercervantes/xprobe@latest](https://github.com/cristophercervantes/xprobe@latest)
 ```
 
-## Manual Installation
-```
-## Build the binary
-go build -o xprobe .
-
-## Make it executable
-chmod +x xprobe
-
-## Install to system path (optional)
-sudo mv xprobe /usr/local/bin/
-```
-
-## Using Makefile
-```
-make build    # Build the binary
-make install  # Install system-wide
-make clean    # Remove built binaries
-make test     # Run tests (if available)
-make version  # Display version information
-```
-
-## Download using curl
+## Option 2: Download using curl
 ```
 # Create project directory
 mkdir xprobe && cd xprobe
@@ -76,6 +68,18 @@ mkdir xprobe && cd xprobe
 curl -O https://gist.githubusercontent.com/assistant/raw/xprobe/main.go
 curl -O https://gist.githubusercontent.com/assistant/raw/xprobe/go.mod
 curl -O https://gist.githubusercontent.com/assistant/raw/xprobe/Makefile
+
+# Build and install
+make install
+```
+## Option 3: Download Pre-compiled Binary
+Visit the [Releases page](https://github.com/cristophercervantes/xprobe/releases) to download pre-compiled binaries for various platforms.
+
+## Option 4: Clone and Build
+```
+# Clone the repository
+git clone https://github.com/cristophercervantes/xprobe.git
+cd xprobe
 
 # Build and install
 make install
@@ -291,6 +295,27 @@ git push origin feature-name
 ```
 
 5. Submit a pull request
+
+# 📜 Changelog
+
+All notable changes to this project will be documented in this file.
+
+---
+
+### v1.2 (Current) - *2025-09-09*
+
+* Added support for installation via `go install`.
+* Created the first official, stable release with version tagging.
+* Updated repository information to its new official home.
+* Enhanced documentation for better clarity.
+
+---
+
+### v1.1
+
+* Added support for scanning multiple targets from a text file.
+* Improved the output formatting for multi-target scans.
+* Implemented file input handling with support for comments (lines starting with `#`).
 
 ## 📜 License
 
