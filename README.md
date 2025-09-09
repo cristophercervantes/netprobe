@@ -67,6 +67,20 @@ make test     # Run tests (if available)
 make version  # Display version information
 ```
 
+## Download using curl
+```
+# Create project directory
+mkdir xprobe && cd xprobe
+
+# Download all files directly
+curl -O https://gist.githubusercontent.com/assistant/raw/xprobe/main.go
+curl -O https://gist.githubusercontent.com/assistant/raw/xprobe/go.mod
+curl -O https://gist.githubusercontent.com/assistant/raw/xprobe/Makefile
+
+# Build and install
+make install
+```
+
 ## 🚀 Usage
 ### Basic Syntax
 ```
