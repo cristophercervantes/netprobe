@@ -56,7 +56,7 @@ If you have Go installed and configured, you can install `xprobe` with a single 
 
 ```bash
 # Install the latest version
-go install [github.com/cristophercervantes/xprobe@latest](https://github.com/cristophercervantes/xprobe@latest)
+go install github.com/cristophercervantes/xprobe@latest](https://github.com/cristophercervantes/xprobe@latest
 ```
 
 ## Option 2: Download using curl
